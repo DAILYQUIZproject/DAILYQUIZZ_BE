@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\dailyquiz.Web.props" />
-</Project>
