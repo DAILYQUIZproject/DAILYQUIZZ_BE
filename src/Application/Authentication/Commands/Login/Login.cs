@@ -10,17 +10,28 @@ public class LoginCommandHanler : IRequestHandler<LoginCommand, string>
 {
      private readonly IApplicationDbContext _context;
 
-
-    public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public LoginCommandHanler(IApplicationDbContext context)
     {
-        // Get Member
-        var member = "";
-         
-        // Gen JWT
-        if(member is null)
-        {
-          
-        }
-        // Return JWT
+        _context = context;
     }
+
+    public Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    // public  Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    // {
+    //     // // Get Member
+    //     // var member = "";
+
+    //     // // Gen JWT
+    //     // if(member is null)
+    //     // {
+
+    //     // }
+    //     // // Return JWT
+    //     return null;
+    // }
 }

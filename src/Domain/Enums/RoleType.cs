@@ -1,6 +1,6 @@
 namespace dailyquiz.Domain.Enums;
 
-public enum Role
+public enum RoleType
 {
     Guest = 0,
     FreeUser = 1,
