@@ -7,9 +7,9 @@ public static class RoleSeed
     {
         return new List<Role>
         {
-            new Role {  Name = "Admin" },
-            new Role {  Name = "User" },
-             new Role {  Name = "Guest" }
+            new Role {  Id = Guid.NewGuid(), Name = "Admin" },
+            new Role {  Id = Guid.NewGuid(), Name = "User" },
+             new Role {   Id = Guid.NewGuid(),Name = "Guest" }
         };
     }
 }
