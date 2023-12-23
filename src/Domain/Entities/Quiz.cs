@@ -2,7 +2,7 @@ namespace dailyquiz.Domain.Entities;
 
 public class Quiz : BaseAuditableEntity
 {
-    public required string Title { get; set; }
+    public required string Title  { get; set; }
     public DateTime CreatedDate { get; set; }
 
     public Guid UserId { get; set; }

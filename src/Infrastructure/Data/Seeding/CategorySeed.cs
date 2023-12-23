@@ -7,9 +7,8 @@ public static class CategorySeed
     {
         return new List<Category>
         {
-            new Category { Id = Guid.NewGuid(), Name = "History" },
-            new Category {  Id = Guid.NewGuid(),Name = "Geography" }
-      
+            // new Category { Id = Guid.NewGuid(), Title = "History" },
+            // new Category {  Id = Guid.NewGuid(),Title = "Geography" }
         };
     }
 }

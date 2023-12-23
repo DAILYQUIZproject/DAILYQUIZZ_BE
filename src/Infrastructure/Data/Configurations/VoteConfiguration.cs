@@ -12,8 +12,14 @@ public class VoteConfiguration : IEntityTypeConfiguration<Vote>
         
         builder.Property(v => v.Upvote).IsRequired();
 
-        builder.HasOne(v => v.User)
-            .WithMany(u => u.Votes)
-            .HasForeignKey(v => v.UserId);
+       builder.HasOne(v => v.User)
+               .WithMany(u => u.Votes)
+               .HasForeignKey(v => v.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(v => v.Question)
+               .WithMany(q => q.Votes)
+               .HasForeignKey(v => v.QuestionId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

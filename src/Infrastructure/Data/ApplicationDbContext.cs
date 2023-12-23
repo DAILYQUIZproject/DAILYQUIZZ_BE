@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dailyquiz.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
+public class ApplicationDbContext :  IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -37,6 +37,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         builder.ApplyConfiguration(new CommentConfiguration());
         builder.ApplyConfiguration(new VoteConfiguration());
         builder.ApplyConfiguration(new VoteCommentConfiguration());
+        builder.ApplyConfiguration(new DifficultyConfiguration());
+        builder.ApplyConfiguration(new CollectionConfiguration());
 
         builder.Entity<User>().HasData(UserSeed.GetUsers());
         builder.Entity<Role>().HasData(RoleSeed.GetRoles());

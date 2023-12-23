@@ -12,16 +12,15 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         
         builder.Property(c => c.Text)
             .IsRequired();
-            
-        builder.Property(c => c.PostedDate)
-            .IsRequired();
 
         builder.HasOne(c => c.User)
             .WithMany(u => u.Comments)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade); // Restrict or NoAction to prevent cascade delete
 
         builder.HasMany(c => c.VoteComments)
             .WithOne(vc => vc.Comment)
-            .HasForeignKey(vc => vc.CommentId);
+            .HasForeignKey(vc => vc.CommentId)
+            .OnDelete(DeleteBehavior.Cascade); // Restrict or NoAction to prevent cascade delete
     }
 }

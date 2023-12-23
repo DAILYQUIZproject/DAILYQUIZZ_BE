@@ -21,9 +21,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash)
             .IsRequired();
             
-        builder.HasOne(u => u.Role)
-            .WithMany(r => r.Users)
-            .HasForeignKey(u => u.RoleId);
+        builder.HasMany(u => u.Roles)
+            .WithMany(r => r.Users);
             
         builder.HasMany(u => u.Quizzes)
             .WithOne(q => q.User)

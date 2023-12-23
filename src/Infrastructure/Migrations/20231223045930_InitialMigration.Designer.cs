@@ -12,7 +12,7 @@ using dailyquiz.Infrastructure.Data;
 namespace dailyquiz.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231222045218_InitialMigration")]
+    [Migration("20231223045930_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -37,7 +37,7 @@ namespace dailyquiz.Infrastructure.Migrations
 
                     b.HasIndex("QuestionsId");
 
-                    b.ToTable("QuestionCategories", (string)null);
+                    b.ToTable("CategoryQuestion");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -173,7 +173,55 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<Guid>("RolesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
+                });
+
             modelBuilder.Entity("dailyquiz.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollectionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollectionId");
+
+                    b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Collection", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -191,30 +239,14 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("889c3dca-003b-4fc5-a952-c8f523bf8dc2"),
-                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastModified = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "History"
-                        },
-                        new
-                        {
-                            Id = new Guid("048f27a3-137a-4fd5-8b62-03e59c6813dd"),
-                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastModified = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Geography"
-                        });
+                    b.ToTable("Collection");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.Comment", b =>
@@ -235,8 +267,8 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PostedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -247,9 +279,45 @@ namespace dailyquiz.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("QuestionId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments", (string)null);
+                });
+
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Difficulty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
+
+                    b.ToTable("Difficulty");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.Question", b =>
@@ -271,6 +339,9 @@ namespace dailyquiz.Infrastructure.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DifficultId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -342,37 +413,14 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8adb7d6f-25f8-4a32-a85c-b40d50138c4c"),
-                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastModified = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("ea5fb7f1-f856-45c4-a693-9fcb192a5b2b"),
-                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastModified = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "User"
-                        },
-                        new
-                        {
-                            Id = new Guid("40448509-c7a5-4580-9242-c54dc1616637"),
-                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastModified = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Guest"
-                        });
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.TodoItem", b =>
@@ -475,17 +523,12 @@ namespace dailyquiz.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -508,6 +551,9 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Upvote")
                         .HasColumnType("bit");
 
@@ -515,6 +561,8 @@ namespace dailyquiz.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
 
                     b.HasIndex("UserId");
 
@@ -545,9 +593,14 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Property<bool>("Upvote")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("VoteComments", (string)null);
                 });
@@ -683,15 +736,60 @@ namespace dailyquiz.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.HasOne("dailyquiz.Domain.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dailyquiz.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("dailyquiz.Domain.Entities.Collection", "Collection")
+                        .WithMany("Categories")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+                });
+
             modelBuilder.Entity("dailyquiz.Domain.Entities.Comment", b =>
                 {
+                    b.HasOne("dailyquiz.Domain.Entities.Question", "Question")
+                        .WithMany("Comments")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dailyquiz.Domain.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Question");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Difficulty", b =>
+                {
+                    b.HasOne("dailyquiz.Domain.Entities.Question", "Question")
+                        .WithOne("Difficulty")
+                        .HasForeignKey("dailyquiz.Domain.Entities.Difficulty", "QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.Question", b =>
@@ -699,7 +797,7 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.HasOne("dailyquiz.Domain.Entities.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Quiz");
@@ -710,7 +808,7 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.HasOne("dailyquiz.Domain.Entities.User", "User")
                         .WithMany("Quizzes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -750,24 +848,21 @@ namespace dailyquiz.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("dailyquiz.Domain.Entities.User", b =>
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Vote", b =>
                 {
-                    b.HasOne("dailyquiz.Domain.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("dailyquiz.Domain.Entities.Question", "Question")
+                        .WithMany("Votes")
+                        .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("dailyquiz.Domain.Entities.Vote", b =>
-                {
                     b.HasOne("dailyquiz.Domain.Entities.User", "User")
                         .WithMany("Votes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Question");
 
                     b.Navigation("User");
                 });
@@ -777,10 +872,23 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.HasOne("dailyquiz.Domain.Entities.Comment", "Comment")
                         .WithMany("VoteComments")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("dailyquiz.Domain.Entities.User", "User")
+                        .WithMany("VoteComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Collection", b =>
+                {
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.Comment", b =>
@@ -788,14 +896,19 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Navigation("VoteComments");
                 });
 
+            modelBuilder.Entity("dailyquiz.Domain.Entities.Question", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Difficulty")
+                        .IsRequired();
+
+                    b.Navigation("Votes");
+                });
+
             modelBuilder.Entity("dailyquiz.Domain.Entities.Quiz", b =>
                 {
                     b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("dailyquiz.Domain.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("dailyquiz.Domain.Entities.TodoList", b =>
@@ -808,6 +921,8 @@ namespace dailyquiz.Infrastructure.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Quizzes");
+
+                    b.Navigation("VoteComments");
 
                     b.Navigation("Votes");
                 });

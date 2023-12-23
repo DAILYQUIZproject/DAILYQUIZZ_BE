@@ -9,14 +9,16 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.ToTable("Categories");
 
         builder.HasKey(c => c.Id);
-        
-        builder.Property(c => c.Name)
-            .IsRequired()
-            .HasMaxLength(50);
 
-        // Configuring the many-to-many relationship with Questions
+        // // Configuring the many-to-many relationship with Questions
+        // builder.HasMany(c => c.Questions)
+        //     .WithMany(q => q.Categories)
+        //     .UsingEntity(j => j.ToTable("QuestionCategories"));
+
+           builder.Property(c => c.Title).IsRequired().HasMaxLength(200);
+
+        // Many-to-Many: Category to Question
         builder.HasMany(c => c.Questions)
-            .WithMany(q => q.Categories)
-            .UsingEntity(j => j.ToTable("QuestionCategories"));
+               .WithMany(q => q.Categories);
     }
 }

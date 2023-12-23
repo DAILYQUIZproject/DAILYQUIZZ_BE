@@ -12,8 +12,14 @@ public class VoteCommentConfiguration : IEntityTypeConfiguration<VoteComment>
         
         builder.Property(vc => vc.Upvote).IsRequired();
 
+          builder.HasOne(vc => vc.User)
+               .WithMany(u => u.VoteComments)
+               .HasForeignKey(vc => vc.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(vc => vc.Comment)
-            .WithMany(c => c.VoteComments)
-            .HasForeignKey(vc => vc.CommentId);
+               .WithMany(c => c.VoteComments)
+               .HasForeignKey(vc => vc.CommentId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }
